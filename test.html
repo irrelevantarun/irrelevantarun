@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RoomKraft — Design Without Guesswork</title>
+  <meta name="description" content="Visualize your room styles instantly before you renovate. Premium interior design visualization platform." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-2: #8fb7d9;
+      --shadow: 0 10px 30px rgba(20,30,50,0.06);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --maxw: 1200px;
+      --glass: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6));
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: "Manrope", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background:var(--bg);
+      color:#0f1724;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:var(--maxw);margin:0 auto;padding:36px 24px}
+
+    /* Header */
+    header{background:transparent}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:52px;height:52px;border-radius:14px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 6px 18px rgba(59,130,246,0.16);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-weight:800;font-size:18px;
+    }
+    .brand small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+
+    nav ul{display:flex;gap:18px;align-items:center;list-style:none}
+    nav li{font-weight:600;color:var(--muted);font-size:14px}
+    .cta{background:var(--accent);color:#fff;padding:10px 16px;border-radius:12px;box-shadow:0 8px 24px rgba(59,130,246,0.14);font-weight:700}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr 480px;gap:36px;align-items:center;padding:40px 0}
+    .eyebrow{display:inline-block;background:rgba(59,130,246,0.08);color:var(--accent);padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
+    .hero h1{font-size:40px;line-height:1.05;margin-top:14px;font-weight:800}
+    .hero p{color:var(--muted);margin-top:14px;font-size:16px}
+    .actions{display:flex;gap:12px;margin-top:22px;align-items:center}
+    .secondary{background:transparent;border:1px solid rgba(15,23,36,0.06);padding:10px 14px;border-radius:12px;font-weight:700;color:var(--muted)}
+
+    /* mockup card */
+    .mockup{background:var(--card);border-radius:18px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+    .mockup .room{height:340px;border-radius:12px;background-image:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);overflow:hidden;display:flex}
+    .mockup .room .left{flex:1;padding:12px}
+    .mockup .room .right{width:170px;background:linear-gradient(180deg,#f8fbff,#f3f7fb);padding:16px;border-left:1px solid rgba(15,23,36,0.03)}
+    .badges{display:flex;gap:8px;font-weight:700;color:var(--muted);font-size:13px}
+
+    /* sections */
+    section{padding:48px 0}
+    h3.section-title{font-size:20px;margin-bottom:18px;font-weight:700}
+
+    /* features grid */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .feature{background:var(--card);padding:20px;border-radius:12px;box-shadow:var(--shadow);display:flex;gap:14px;align-items:flex-start}
+    .feature .icon{width:54px;height:54px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;background:linear-gradient(180deg,rgba(59,130,246,0.12),rgba(143,183,217,0.06));color:var(--accent);font-size:22px}
+    .feature h4{font-size:16px}
+    .feature p{color:var(--muted);font-size:14px;margin-top:6px}
+
+    /* how it works */
+    .how{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center}
+    .steps{display:flex;flex-direction:column;gap:18px}
+    .step{display:flex;gap:14px;align-items:flex-start}
+    .step .num{width:44px;height:44px;border-radius:12px;background:var(--card);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);font-weight:800;color:var(--accent)}
+
+    /* gallery */
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform .18s ease}
+    .card:hover{transform:translateY(-6px)}
+    .card .meta{padding:12px}
+    .meta strong{display:block}
+
+    /* testimonials */
+    .testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .test{padding:18px;background:linear-gradient(180deg,rgba(255,255,255,0.95),rgba(255,255,255,0.85));border-radius:12px;box-shadow:var(--shadow)}
+    .test p{color:var(--muted);margin-top:10px}
+
+    /* pricing */
+    .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .plan{background:var(--card);padding:20px;border-radius:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+    .plan .price{font-size:20px;font-weight:800}
+    .plan .list{color:var(--muted);font-size:14px}
+
+    /* footer */
+    footer{padding:28px 0;border-top:1px solid rgba(15,23,36,0.04);margin-top:24px}
+    .foot-grid{display:flex;gap:40px;align-items:center;justify-content:space-between}
+    .muted{color:var(--muted)}
+    .center{text-align:center}
+
+    /* responsiveness */
+    @media (max-width:1000px){
+      .hero{grid-template-columns:1fr;gap:20px}
+      .mockup .room{height:260px}
+      .features,.gallery,.testimonials,.pricing{grid-template-columns:1fr}
+      .how{grid-template-columns:1fr}
+      .nav{flex-direction:column;align-items:start;gap:12px}
+      nav ul{flex-wrap:wrap}
+    }
+
+    @media (max-width:480px){
+      .logo{width:44px;height:44px}
+      .hero h1{font-size:28px}
+      .container{padding:22px}
+    }
+
+    /* small helpers */
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+    .btn-ghost{background:transparent;border:1px solid rgba(15,23,36,0.06);color:var(--muted)}
+    .pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:#f3f7ff;color:var(--accent);font-weight:700;font-size:13px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo">RK</div>
+        <div>
+          <div style="font-weight:700">RoomKraft</div>
+          <small>Visualize with confidence</small>
+        </div>
+      </div>
+
+      <nav>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li style="display:inline"><a class="cta" href="#book">Get started</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero container" aria-label="Hero">
+      <div>
+        <div class="eyebrow">Trusted by homeowners & designers</div>
+        <h1>Design with confidence — preview real room mockups before you renovate.</h1>
+        <p>RoomKraft helps you explore curated interior styles, test layouts, and visualize materials so you know exactly how your space will look — no surprises.</p>
+
+        <div class="actions" style="margin-top:22px">
+          <a class="btn" href="#book" style="background:var(--accent);color:white;border-radius:12px;box-shadow:0 10px 30px rgba(59,130,246,0.12)">Try RoomKraft — Free</a>
+          <a class="btn btn-ghost" href="#how">How it works</a>
+        </div>
+
+        <div style="display:flex;gap:18px;margin-top:28px;align-items:center">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:48px;height:48px;border-radius:12px;background:var(--card);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)">🖼️</div>
+            <div>
+              <div style="font-weight:800">10k+</div>
+              <div class="muted" style="font-size:13px">Rooms visualized</div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:48px;height:48px;border-radius:12px;background:var(--card);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)">⭐</div>
+            <div>
+              <div style="font-weight:800">4.8/5</div>
+              <div class="muted" style="font-size:13px">Average rating</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="mockup" role="presentation">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="badges">Living • Modern • Calm</div>
+            <div class="muted" style="font-size:13px">Preview • Mockup</div>
+          </div>
+
+          <div class="room" style="margin-top:8px">
+            <div class="left">
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=8c09b6f8c7b3a1f1c9d3b7df0f3d8f5d" alt="room mockup" style="width:100%;height:100%;object-fit:cover;border-radius:10px" />
+            </div>
+            <div class="right">
+              <div style="font-weight:800;margin-bottom:6px">Style</div>
+              <div class="muted">Modern Calm</div>
+
+              <div style="height:12px"></div>
+              <div style="font-weight:800;margin-bottom:6px">Floor</div>
+              <div class="muted">Solid oak</div>
+
+              <div style="height:12px"></div>
+              <div style="font-weight:800;margin-bottom:6px">Wall</div>
+              <div class="muted">Soft grey</div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px">
+            <div class="muted" style="font-size:13px">Save layouts · Compare styles · Share with contractors</div>
+            <div style="display:flex;gap:10px">
+              <button class="btn btn-ghost">Save</button>
+              <button class="btn" style="background:var(--accent);color:white">Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features">
+      <div class="container">
+        <h3 class="section-title">What RoomKraft gives you</h3>
+        <div class="features" aria-hidden="false">
+          <div class="feature">
+            <div class="icon">🖋</div>
+            <div>
+              <h4>Curated styles</h4>
+              <p>Explore designer-curated moodboards and full-room mockups tuned to real materials.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="icon">⚙️</div>
+            <div>
+              <h4>Material realism</h4>
+              <p>See how paint, tiles, and fabrics look in your space with realistic lighting and textures.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="icon">🔁</div>
+            <div>
+              <h4>Compare & iterate</h4>
+              <p>Save multiple versions, compare side-by-side, and make quick decisions with your contractor.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how">
+      <div class="container how">
+        <div>
+          <h3 class="section-title">How it works</h3>
+          <div class="steps">
+            <div class="step">
+              <div class="num">1</div>
+              <div>
+                <div style="font-weight:800">Upload or measure</div>
+                <div class="muted">Add room photos or enter simple dimensions. We auto-detect walls and windows.</div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="num">2</div>
+              <div>
+                <div style="font-weight:800">Pick a style</div>
+                <div class="muted">Choose from curated styles or let AI suggest options based on your taste.</div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="num">3</div>
+              <div>
+                <div style="font-weight:800">Preview & share</div>
+                <div class="muted">View photoreal mockups, tweak materials, and share a spec sheet with builders.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div style="background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow)">
+            <img src="https://images.unsplash.com/photo-1549187774-b4b6c9b6d7a3?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=bb4d7d74f1c4b2d9e3f2a2c9d3f5a1e2" alt="designer" style="border-radius:10px;height:280px;object-fit:cover;width:100%" />
+            <div style="padding-top:12px">
+              <div style="font-weight:800">From idea to build</div>
+              <div class="muted" style="font-size:14px;margin-top:6px">Generate contractor-friendly specs and shopping lists from any mockup.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery">
+      <div class="container">
+        <h3 class="section-title">Styles gallery</h3>
+        <div class="gallery" id="galleryGrid">
+          <div class="card" data-src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=8c09b6f8c7b3a1f1c9d3b7df0f3d8f5d">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=8c09b6f8c7b3a1f1c9d3b7df0f3d8f5d" alt="Modern Calm">
+            <div class="meta"><strong>Modern Calm</strong><div class="muted" style="font-size:13px">Soft greys, oak, neutral fabrics</div></div>
+          </div>
+
+          <div class="card" data-src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3b2c7b4d1a6f1a9f6c6a4d8e1b2a3c4d">
+            <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=3b2c7b4d1a6f1a9f6c6a4d8e1b2a3c4d" alt="Scandinavian">
+            <div class="meta"><strong>Scandinavian</strong><div class="muted" style="font-size:13px">Warm woods, airy layouts</div></div>
+          </div>
+
+          <div class="card" data-src="https://images.unsplash.com/photo-1505691723518-36a6c6b5d3a9?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1a2b3c4d5e6f7g8h9i0j">
+            <img src="https://images.unsplash.com/photo-1505691723518-36a6c6b5d3a9?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1a2b3c4d5e6f7g8h9i0j" alt="Minimal">
+            <div class="meta"><strong>Minimal</strong><div class="muted" style="font-size:13px">Clean lines, subtle accents</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section>
+      <div class="container">
+        <h3 class="section-title">What homeowners say</h3>
+        <div class="testimonials">
+          <div class="test">
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border-radius:12px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800">AR</div>
+              <div>
+                <div style="font-weight:800">Aruna R.</div>
+                <div class="muted" style="font-size:13px">Bengaluru</div>
+              </div>
+            </div>
+            <div style="margin-top:12px">
+              <p>RoomKraft saved us weeks of guesswork — the mockups matched our actual renovation closely and the shopping list was a huge help.</p>
+            </div>
+          </div>
+
+          <div class="test">
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--accent-2),#cfe7ff);border-radius:12px;color:#0f1724;display:flex;align-items:center;justify-content:center;font-weight:800">MK</div>
+              <div>
+                <div style="font-weight:800">Manish K.</div>
+                <div class="muted" style="font-size:13px">Pune</div>
+              </div>
+            </div>
+            <div style="margin-top:12px">
+              <p>The ability to share different mockups with my contractor made decision-making so fast. Highly recommend.</p>
+            </div>
+          </div>
+
+          <div class="test">
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="width:52px;height:52px;background:linear-gradient(135deg,#d6e9f6,#eef6fb);border-radius:12px;color:#0f1724;display:flex;align-items:center;justify-content:center;font-weight:800">SS</div>
+              <div>
+                <div style="font-weight:800">Simran S.</div>
+                <div class="muted" style="font-size:13px">Hyderabad</div>
+              </div>
+            </div>
+            <div style="margin-top:12px">
+              <p>The photorealism is impressive—it helped convince my partner to go bolder with a feature wall.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing">
+      <div class="container">
+        <h3 class="section-title">Pricing</h3>
+        <div class="pricing">
+          <div class="plan">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:800">Basic</div>
+                <div class="muted" style="font-size:13px">Try core features</div>
+              </div>
+              <div class="price">₹0</div>
+            </div>
+            <div class="list">1 room • Basic materials • Shareable mockup</div>
+            <div style="margin-top:12px"><button class="btn btn-ghost">Start free</button></div>
+          </div>
+
+          <div class="plan" style="border:2px solid rgba(59,130,246,0.08)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:800">Pro</div>
+                <div class="muted" style="font-size:13px">For homeowners & designers</div>
+              </div>
+              <div class="price">₹799 / mo</div>
+            </div>
+            <div class="list">5 rooms • High-res mockups • Contractor spec sheets</div>
+            <div style="margin-top:12px"><button class="btn" style="background:var(--accent);color:white">Get Pro</button></div>
+          </div>
+
+          <div class="plan">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:800">Studio</div>
+                <div class="muted" style="font-size:13px">For small studios & teams</div>
+              </div>
+              <div class="price">Contact</div>
+            </div>
+            <div class="list">Unlimited rooms • Team seats • Priority support</div>
+            <div style="margin-top:12px"><button class="btn btn-ghost">Contact sales</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="foot-grid">
+        <div style="display:flex;gap:18px;align-items:center">
+          <div class="logo" style="width:56px;height:56px;border-radius:12px">RK</div>
+          <div>
+            <div style="font-weight:800">RoomKraft</div>
+            <div class="muted" style="font-size:13px">Visualize with confidence</div>
+          </div>
+        </div>
+
+        <div class="muted">© <span id="year"></span> RoomKraft — Made with care</div>
+
+        <div style="display:flex;gap:14px;align-items:center" class="muted">
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal (hidden by default) -->
+  <div id="modal" style="position:fixed;inset:0;background:rgba(2,6,23,0.6);display:flex;align-items:center;justify-content:center;z-index:1200;padding:24px;opacity:0;pointer-events:none;transition:all .2s ease">
+    <div style="max-width:960px;width:100%;background:var(--card);border-radius:12px;padding:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-weight:800">Preview</div>
+        <button id="closeModal" class="btn btn-ghost">Close</button>
+      </div>
+      <img id="modalImg" src="" alt="preview" style="width:100%;border-radius:8px;object-fit:cover;max-height:70vh" />
+    </div>
+  </div>
+
+  <script>
+    // set year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // modal logic
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modalImg');
+    document.querySelectorAll('.gallery .card').forEach(card=>{
+      card.addEventListener('click', ()=>{
+        const src = card.getAttribute('data-src') || card.querySelector('img').src;
+        modalImg.src = src;
+        modal.style.opacity = '1';
+        modal.style.pointerEvents = 'auto';
+      });
+    });
+    document.getElementById('closeModal').addEventListener('click', ()=>{
+      modal.style.opacity = '0';
+      modal.style.pointerEvents = 'none';
+      modalImg.src = '';
+    });
+    modal.addEventListener('click', (e)=>{
+      if(e.target === modal) {
+        modal.style.opacity = '0';
+        modal.style.pointerEvents = 'none';
+        modalImg.src = '';
+      }
+    });
+
+    // smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        const href = a.getAttribute('href');
+        if(href === '#' || href === '') return;
+        const target = document.querySelector(href);
+        if(target){
+          e.preventDefault();
+          target.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+      });
+    });
+  </script>
+</body>
+</html>
