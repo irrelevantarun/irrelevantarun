@@ -11,6 +11,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 /* ---------- Parallax for floating shapes ---------- */
 document.addEventListener('mousemove', (e) => {
+  const container = document.querySelector('.floating-shapes');
+  if (container && container.classList.contains('pinned')) return;
+
   const shapes = document.querySelectorAll('.shape');
   const x = e.clientX / window.innerWidth;
   const y = e.clientY / window.innerHeight;
@@ -21,7 +24,6 @@ document.addEventListener('mousemove', (e) => {
     const yPos = (y - 0.5) * speed;
     let extra = '';
     if (shape.classList.contains('shape-square')) extra = ' rotate(45deg)';
-    // Avoid forcing transform when pinned; pinned CSS will override appropriately.
     shape.style.transform = `translate(${xPos}px, ${yPos}px)${extra}`;
   });
 });
@@ -349,11 +351,12 @@ applyTheme(colorSchemes[currentThemeIndex]);
       const dx = target.left - from.left;
       const dy = target.top - from.top;
       const scale = target.width / from.width;
+      ci.clone.style.transition = 'none';
       ci.clone.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
-      ci.clone.style.opacity = '1';
+      ci.clone.style.opacity = '0';
     });
 
-    return await sleep(ANIM_MS + 12, myRunId);
+    return true;
   }
 
   async function animateClonesToHome(clonesInfo, homeRects, myRunId) {
@@ -506,7 +509,10 @@ applyTheme(colorSchemes[currentThemeIndex]);
     shapesContainer.style.pointerEvents = 'none';
 
     cleanupClones(clonesInfo);
-    shapes.forEach(s => { s.style.visibility = ''; });
+    shapes.forEach(s => {
+      s.style.visibility = '';
+      s.style.transform = 'none';
+    });
 
     // re-mark stability after layout settled
     markActionStability(true);
@@ -634,6 +640,7 @@ applyTheme(colorSchemes[currentThemeIndex]);
       shapesContainer.classList.add('pinned');
       shapesContainer.style.pointerEvents = 'none';
       updatePinnedRightOffset();
+      document.querySelectorAll('.floating-shapes .shape').forEach(s => { s.style.transform = 'none'; });
       currentPinnedState = true;
     } else {
       shapesContainer.classList.remove('pinned');
